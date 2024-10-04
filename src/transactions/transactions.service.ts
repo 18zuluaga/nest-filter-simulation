@@ -1,26 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Repository } from 'typeorm';
+import { Transaction } from './entities/transaction.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TransactionsService {
-  create(createTransactionDto: CreateTransactionDto) {
-    return 'This action adds a new transaction';
+  constructor(
+    @InjectRepository(Transaction)
+    private readonly transactionRepository: Repository<Transaction>,
+  ) {}
+
+  async create(createTransactionDto: CreateTransactionDto) {
+    try {
+      return await this.transactionRepository.save(createTransactionDto); 
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all transactions`;
+  async findAll() {
+    try {
+      return await this.transactionRepository.find();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: number) {
+    try {
+      return await this.transactionRepository.findOneBy({ id });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async update(id: number, updateTransactionDto: UpdateTransactionDto) {
+    try {
+      return await this.transactionRepository.update(id, updateTransactionDto);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   remove(id: number) {
-    return `This action removes a #${id} transaction`;
+    try {
+      return this.transactionRepository.delete(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

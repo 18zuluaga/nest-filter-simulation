@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { mercadoPagoApi } from 'src/common/config/axios.xonfig';
 
 @Injectable()
 export class UsersService {
@@ -14,9 +15,16 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      return await this.userRepository.save(createUserDto);
+      const user = await this.userRepository.save(createUserDto);
+
+      // Solo enviar el email como parte de la solicitud
+      const usermercado = await mercadoPagoApi.post('/customers', {
+        email: createUserDto.email,
+      });
+      console.log(usermercado);
+      return user;
     } catch (error) {
-      console.log(error);
+      console.error(error); // Para obtener más información sobre el error
     }
   }
 
@@ -24,8 +32,8 @@ export class UsersService {
     try {
       const user = await this.userRepository.findOneBy({ email });
       if (user && user.password === password) {
-        const { password, ...result } = user;
-        return result;
+        delete user.password;
+        return user;
       }
       return null;
     } catch (error) {
@@ -41,8 +49,12 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   findOne(id: number) {

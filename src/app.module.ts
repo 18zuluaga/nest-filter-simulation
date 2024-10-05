@@ -10,6 +10,7 @@ import { User } from './users/entities/user.entity';
 import { TransactionsModule } from './transactions/transactions.module';
 import { Transaction } from './transactions/entities/transaction.entity';
 import { AuthModule } from './auth/auth.module';
+import { MercadoPagoModule } from './mercado-pago/mercado-pago.module';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ dotenv.config();
     TransactionsModule,
     TransactionsModule,
     AuthModule,
+    MercadoPagoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,6 +3,7 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { PrivateService, Role } from 'src/common/decorators/permision.decorator';
 
 @ApiTags('products') // Agrupar rutas en Swagger
 @Controller('products')
@@ -26,6 +27,8 @@ export class ProductsController {
     },
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
+  @PrivateService()
+  @Role(['admin'])
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);

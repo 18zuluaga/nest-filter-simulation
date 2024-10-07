@@ -12,23 +12,11 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() credentials: { email: string; password: string }) {
-    return this.authService.loginWithCredentials(credentials);
+    return this.authService.login(credentials);
   }
 
   @Post('register')
   async register(@Body() registerDto: CreateUserDto) {
-    return this.authService.registerWithCredentials(registerDto);
-  }
-
-  @Get('login/social')
-  async loginWithSocial(@Query('provider') provider: string) {
-    const redirectUrl = this.authService.getAuthUrl(provider);
-    return { redirect: redirectUrl };
-  }
-
-  @Get('callback')
-  async callback(@Query() query: any) {
-    const user = await this.authService.handleCallback(query);
-    return { user };
+    return this.authService.register(registerDto);
   }
 }
